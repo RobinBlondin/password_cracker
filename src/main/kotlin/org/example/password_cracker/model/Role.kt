@@ -7,19 +7,15 @@ import jakarta.persistence.Id
 import lombok.AllArgsConstructor
 import lombok.Builder
 import lombok.NoArgsConstructor
-import java.util.UUID
+import java.util.*
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
-
-class User {
+@Builder
+class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null
-    val email: String? = null
     val name: String? = null
-    val password: String? = null
-
 }
