@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Password</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="search-container">
+    <form action="/home" method="post">
+        <label>
+            <textarea name="search" id="" cols="30" rows="10" class="search-input" placeholder="Enter hash value"></textarea>
+        </label>
+
+        <button type="submit" class="search-button">Encode</button>
+        <br>
+        <a href="/home">
+            <button class="search-button">Back</button>
+        </a>
+        <br>
+        <a href="/logout">
+            <button class="search-button">Logout</button>
+        </a>
+    </form>
+</div>
+</body>
+</html>
