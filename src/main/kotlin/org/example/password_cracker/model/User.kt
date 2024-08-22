@@ -1,25 +1,42 @@
 package org.example.password_cracker.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import lombok.AllArgsConstructor
 import lombok.Builder
 import lombok.NoArgsConstructor
+import org.example.password_cracker.enums.Role
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.util.UUID
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-
-class User {
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID? = null
-    val email: String? = null
-    val name: String? = null
-    val password: String? = null
+    private var id: UUID? = null,
+    private var email: String? = null,
+    private var name: String? = null,
+    private var password: String? = null,
+    private var enabled: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    private var role: Role = Role.CLIENT
+) : UserDetails {
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
+        mutableListOf(SimpleGrantedAuthority("ROLE_${role.name}"))
 
+    override fun getPassword(): String = password ?: ""
+
+    override fun getUsername(): String = email ?: ""
+
+    override fun isAccountNonExpired(): Boolean = true
+
+    override fun isAccountNonLocked(): Boolean = true
+
+    override fun isCredentialsNonExpired(): Boolean = true
+
+    override fun isEnabled(): Boolean = enabled
 }
