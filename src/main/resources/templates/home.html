@@ -4,9 +4,26 @@
   <meta charset="UTF-8">
   <title>Hash Password</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
+
 </head>
 <body>
-<div th:if="${result} != ''" th:text="${result}" class="error-message"></div>
+<img src="/images/logo.png" alt="">
+<th:block th:if="${md5} != null">
+  <div class="hash-container">
+    <h5 >MD5: </h5>
+    <p th:text="${md5}" class="hash-display" id="md5"></p>
+    <button class="copy-button" onclick="copyToClipboard('md5')">Copy</button>
+  </div>
+</th:block>
+<br>
+<th:block th:if="${sha256} != null">
+  <div class="hash-container">
+    <h5>SHA256:</h5>
+    <p th:text="${sha256}" class="hash-display" id="sha256"></p>
+    <button th:if="${sha256} != ''" class="copy-button" onclick="copyToClipboard('sha256')">Copy</button>
+  </div>
+</th:block>
+
 <br><br>
 <div class="search-container">
 
@@ -14,16 +31,24 @@
     <label>
       <input type="text" name="search" placeholder="Enter any text" class="search-input">
     </label>
-    <button type="submit" class="search-button">Encode</button>
-    <br>
-    <a href="/crack">
-      <button class="search-button">Go to Decoder</button>
+    <a href="">
+      <button type="submit" class="search-button">Encode</button>
     </a>
     <br>
-    <a href="/logout">
-      <button class="search-button">Logout</button>
-    </a>
+    <div class="button-container">
+      <a href="/crack" class="decode-button">Go to Decoder</a>
+    </div>
+    <br>
+    <div class="button-container">
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
   </form>
 </div>
+<script>
+  function copyToClipboard(id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text);
+  }
+</script>
 </body>
 </html>

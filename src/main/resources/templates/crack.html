@@ -2,25 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <meta charset="UTF-8">
-    <title>Find Password</title>
+    <title>Decode Hash</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+
 </head>
 <body>
-<div class="search-container">
-    <form action="/home" method="post">
-        <label>
-            <textarea name="search" id="" cols="30" rows="10" class="search-input" placeholder="Enter hash value"></textarea>
-        </label>
+<img src="/images/logo.png" alt=""><br><br><br><br>
+<th:block th:if="${result} != null">
+    <div class="hash-container">
+        <p th:text="${result}" class="hash-display"></p>
+    </div>
+</th:block>
+<br>
 
-        <button type="submit" class="search-button">Encode</button>
-        <br>
-        <a href="/home">
-            <button class="search-button">Back</button>
+<br><br>
+<div class="search-container">
+
+    <form action="/crack" method="post">
+        <label>
+            <input type="text" name="search" placeholder="Enter SHA256 or MD5 hashed string" class="search-input">
+        </label>
+        <a href="">
+            <button type="submit" class="search-button">Decode</button>
         </a>
         <br>
-        <a href="/logout">
-            <button class="search-button">Logout</button>
-        </a>
+        <div class="button-container">
+            <a href="/home" class="decode-button">Go to Encoder</a>
+        </div>
+        <br>
+        <div class="button-container">
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
     </form>
 </div>
 </body>
