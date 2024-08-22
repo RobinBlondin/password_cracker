@@ -28,6 +28,16 @@ class HomeService {
         return hashes
     }
 
-        return hashedPassword
+    fun crackHash(hash: String): String {
+        val result = if(hash.length == 64) {
+            sha256Map.filterValues { it == hash }.keys.firstOrNull()
+        } else {
+            md5Map.filterValues { it == hash }.keys.firstOrNull()
+        }
+
+        return when(result) {
+            null -> "Password not found"
+            else -> "Password: $result"
+        }
     }
 }
