@@ -14,9 +14,6 @@ import java.util.*
 class DataInitializer {
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
-
-    @Bean
     fun init(userRepository: UserRepository, passwordEncoder: PasswordEncoder) = ApplicationRunner {
 
         if(userRepository.findUserByEmail("admin@cracker.se").isPresent) {
