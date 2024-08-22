@@ -26,7 +26,7 @@ class User(
     private var role: Role = Role.CLIENT
 ) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
-        mutableListOf(SimpleGrantedAuthority("ROLE_${role.name}"))
+        mutableListOf(SimpleGrantedAuthority(role.toString()))
 
     override fun getPassword(): String = password ?: ""
 
