@@ -2,16 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
   <meta charset="UTF-8">
-  <title>Find Password</title>
+  <title>Hash Password</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+<div th:if="${result} != ''" th:text="${result}" class="error-message"></div>
+<br><br>
 <div class="search-container">
+
   <form action="/home" method="post">
     <label>
       <input type="text" name="search" placeholder="Enter any text" class="search-input">
     </label>
-    <button type="submit" class="search-button">Get Hash</button>
+    <button type="submit" class="search-button">Encode</button>
+    <br>
+    <a href="/crack">
+      <button class="search-button">Go to Decoder</button>
+    </a>
+    <br>
+    <a href="/logout">
+      <button class="search-button">Logout</button>
+    </a>
   </form>
 </div>
 </body>
