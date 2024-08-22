@@ -1,11 +1,12 @@
 package org.example.password_cracker.service
 
-import org.springframework.security.crypto.bcrypt.BCrypt
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import lombok.Data
+import org.example.password_cracker.WriteFile
 import org.springframework.stereotype.Service
-import java.io.File
+import java.security.MessageDigest
 
 @Service
+@Data
 class HomeService {
     val sha256Map = mutableMapOf<String, String>()
     val md5Map = mutableMapOf<String, String>()
