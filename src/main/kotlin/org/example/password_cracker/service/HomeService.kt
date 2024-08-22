@@ -24,11 +24,9 @@ class HomeService {
         sha256Map[password] = hashes.first
         md5Map[password] = hashes.second
 
-    fun saveEntryToFile(password: String): String {
-        val hashedPassword = hashPassword(password)
-        val entry = "$password:$hashedPassword"
-        val file = File("passwords.txt")
-        file.appendText(entry + "\n")
+        WriteFile(this).run()
+        return hashes
+    }
 
         return hashedPassword
     }
