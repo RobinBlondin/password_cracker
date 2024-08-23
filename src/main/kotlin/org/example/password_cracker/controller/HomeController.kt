@@ -11,11 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 @Controller
 class HomeController(@Autowired private val homeService: HomeService) {
 
-    @GetMapping("/")
-    fun root(): String = "redirect:/login"
 
-    @GetMapping("/login")
-    fun index(): String = "login"
 
     @GetMapping("/home")
     fun home(): String = "home"
