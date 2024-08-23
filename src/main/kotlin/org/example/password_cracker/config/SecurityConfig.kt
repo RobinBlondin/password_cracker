@@ -30,7 +30,7 @@ class SecurityConfig(
             .authenticationProvider(customAuthenticationProvider)
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/", "/login", "/oauth2/**").permitAll()
+                    .requestMatchers("/", "/login", "/oauth2/**", "/register").permitAll()
                     .requestMatchers("/home", "/crack").authenticated()
                     .anyRequest().permitAll()
             }
