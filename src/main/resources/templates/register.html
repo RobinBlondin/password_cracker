@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Account</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="logo-container">
+    <img src="/images/logo.png" alt="" class="logo">
+</div>
+<div class="login-container">
+    <br>
+    <form action="/register" method="post">
+        <div class="input-group">
+            <label for="name"></label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" minlength="2" maxlength="50" pattern="[A-Öa-ö ]+" class="login-input" required>
+        </div>
+        <div class="input-group">
+            <label for="email"></label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" minlength="5" maxlength="50" class="login-input" required>
+        </div>
+        <div class="input-group">
+            <label for="password"></label>
+            <input type="password" id="password" name="password" minlength="8" placeholder="Enter your password" class="login-input"
+                   required>
+        </div>
+        <div class="input-group">
+            <label for="password-confirm"></label>
+            <input type="password" id="password-confirm" name="passwordConfirm" minlength="8" placeholder="Confirm your password"
+                   class="login-input" required>
+        </div>
+        <div>
+            <button type="submit" class="login-button">Register</button>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
