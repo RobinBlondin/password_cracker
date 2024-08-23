@@ -21,7 +21,7 @@ class User(
     private var email: String? = null,
     private var name: String? = null,
     private var password: String? = null,
-    private var enabled: Boolean = false,
+    private var enabled: Boolean = true,
     @Enumerated(EnumType.STRING)
     private var role: Role = Role.CLIENT
 ) : UserDetails {
