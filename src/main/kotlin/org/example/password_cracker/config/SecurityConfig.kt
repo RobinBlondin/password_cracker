@@ -30,14 +30,19 @@ class SecurityConfig(
             .authenticationProvider(customAuthenticationProvider)
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/", "/login").permitAll()
+                    .requestMatchers("/", "/login", "/oauth2/**").permitAll()
                     .requestMatchers("/home", "/crack").authenticated()
                     .anyRequest().permitAll()
+            }
+            .oauth2Login { oauth2Login ->
+                oauth2Login
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/home", true)
+                    .permitAll()
             }
             .formLogin { formLogin ->
                 formLogin
                     .loginPage("/login")
-                    .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/home", true)
                     .failureUrl("/login?error=true")
                     .permitAll()

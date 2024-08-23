@@ -10,7 +10,10 @@
   <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
-
+  <div th:if="${param.error}" class="error-message input-group">
+    Invalid credentials
+  </div>
+  <br>
   <form action="/login" method="post">
     <div class="input-group">
       <label for="username"></label>
@@ -24,8 +27,9 @@
     <div>
       <button type="submit" class="login-button">Login</button>
     </div>
-    <div th:if="${param.error}" class="error-message input-group">
-      Invalid username or password.
+    <br>
+    <div>
+      <a href="/oauth2/authorization/github" class="decode-button">Github Login</a>
     </div>
   </form>
 

@@ -146,6 +146,7 @@ form {
     padding: 15px 30px;
     font-size: 18px;
     font-weight: bold;
+    text-align: center;
     width: 200px;
     min-width: 100px;
     max-width: 400px;
@@ -188,9 +189,21 @@ h3 {
     color: #e74c3c;
 }
 
+.input-group {
+    text-align: center;
+}
+
 @media (max-height: 699px) {
     .logo-container, .logo {
         display: none;
     }
 
+}
+
+@media (max-width: 1000px) {
+    .search-container {
+
+        max-width: 80vw;
+        width: 80vw;
+    }
 }
