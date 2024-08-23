@@ -7,7 +7,9 @@
 
 </head>
 <body>
-<img src="/images/logo.png" alt=""><br><br><br><br>
+<div class="logo-container">
+    <img src="/images/logo.png" alt="" class="logo"><br><br><br><br>
+</div>
 <th:block th:if="${result} != null">
     <div class="hash-container">
         <p th:text="${result}" class="hash-display"></p>
