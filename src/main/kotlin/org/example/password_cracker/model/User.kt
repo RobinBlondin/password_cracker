@@ -17,11 +17,11 @@ import java.util.UUID
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private var id: UUID? = null,
-    private var email: String? = null,
-    private var name: String? = null,
+    var id: UUID? = null,
+    var email: String? = null,
+    var name: String? = null,
     private var password: String? = null,
-    private var enabled: Boolean = true,
+    var enabled: Boolean = false,
     @Enumerated(EnumType.STRING)
     private var role: Role = Role.CLIENT
 ) : UserDetails {
