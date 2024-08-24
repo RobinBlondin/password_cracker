@@ -10,8 +10,20 @@
   <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
-  <div th:if="${param.error}" class="error-message input-group">
+  <div th:if="${param.notFound}" class="error-message input-group">
+    Error: User not found. Create new account.
+  </div>
+  <div th:if="${param.expired}" class="error-message input-group">
+    Activation link has expired. Please register again.
+  </div>
+    <div th:if="${param.verified}" class="success-message">
+        Account has been verified. Please login.
+    </div>
+  <div th:if="${param.error}" class="input-group">
     Invalid credentials
+  </div>
+  <div th:if="${param.register}" class="success-message">
+    An email has been sent to your email address. Please verify your account.
   </div>
   <br>
   <form action="/login" method="post">
@@ -23,18 +35,17 @@
       <label for="password"></label>
       <input type="password" id="password" name="password" placeholder="Enter your password" class="login-input" required>
     </div>
-    <div>
+    <div class="input-group">
       <button type="submit" class="login-button">Login</button>
     </div>
     <br>
-    <div>
+    <div class="input-group">
       <a href="/oauth2/authorization/github" class="decode-button">Github Login</a>
     </div>
-    <br>
-    <div class="sign-container">
-      <p>Don't have an account?</p>
-      <a href="/register" class="sign-up-button">Sign up</a>
-    </div>
+      <div class="sign-container">
+        <p class="account">Don't have an account?</p>
+        <a href="/register" class="sign-up-button">Sign Up</a>
+      </div>
   </form>
 
 </div>
