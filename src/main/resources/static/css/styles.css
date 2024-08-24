@@ -71,6 +71,10 @@ body {
     text-align: center;
 }
 
+.success-message {
+    color: #56f156;
+}
+
 h5 {
     color: darkgray;
     text-align: center;
@@ -112,12 +116,6 @@ label {
     align-items: center;
     width: 100%;
 }
-a {
-    display: block;
-    text-decoration: none;
-    box-sizing: border-box;
-
-}
 
 form {
     display: flex;
@@ -137,6 +135,18 @@ form {
 
 .decode-button {
     background-color: #3498db;
+}
+
+.input-group > button,
+.input-group > a {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+
+.logout-button, .decode-button {
+    text-decoration: none;
 }
 
 .search-button,
@@ -202,6 +212,21 @@ h3 {
     width: 100%;
     max-width: 70vw;
     text-align: center;
+    gap: 5px;
+}
+
+.sign-up-button {
+    color: #6ff3cf;
+    font-style: italic;
+    font-weight: bolder;
+    font-size: larger;
+    text-decoration: none;
+}
+
+.account {
+    color: #939695;
+    font-style: italic;
+    font-size: medium;
 }
 
 @media (max-height: 699px) {
