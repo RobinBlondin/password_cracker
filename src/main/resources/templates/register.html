@@ -10,15 +10,21 @@
     <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
+    <div th:if="${password}" class="error-message input-group">
+        Passwords do not match
+    </div>
+    <div th:if="${email}" class="error-message input-group">
+        Email already exists
+    </div>
     <br>
-    <form action="/register" method="post">
+    <form action="/register" th:object="${dto}" method="post">
         <div class="input-group">
             <label for="name"></label>
-            <input type="text" id="name" name="name" placeholder="Enter your name" minlength="2" maxlength="50" pattern="[A-Öa-ö ]+" class="login-input" required>
+            <input type="text" id="name" name="name" th:field="*{name}" placeholder="Enter your name" minlength="2" maxlength="50" pattern="[A-Öa-ö ]+" class="login-input" required>
         </div>
         <div class="input-group">
             <label for="email"></label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" minlength="5" maxlength="50" class="login-input" required>
+            <input type="email" id="email" name="email" th:field="*{email}" placeholder="Enter your email" minlength="5" maxlength="50" class="login-input" required>
         </div>
         <div class="input-group">
             <label for="password"></label>
@@ -27,7 +33,7 @@
         </div>
         <div class="input-group">
             <label for="password-confirm"></label>
-            <input type="password" id="password-confirm" name="passwordConfirm" minlength="8" placeholder="Confirm your password"
+            <input type="password" id="password-confirm" name="confirmPassword" minlength="8" placeholder="Confirm your password"
                    class="login-input" required>
         </div>
         <div>
