@@ -19,9 +19,16 @@ class CustomAuthenticationProvider(
         val password = authentication.credentials.toString()
         val userDetails = userDetailsService.loadUserByUsername(username)
 
-        return if (passwordEncoder.matches(password, userDetails.password)) {
-            UsernamePasswordAuthenticationToken(userDetails, password, userDetails.authorities)
+        if (!userDetails.isEnabled) {
+            println("User $username is not enabled.")
+            throw BadCredentialsException("Your account needs to be verified. Please check your email")
+        }
+
+        if (passwordEncoder.matches(password, userDetails.password)) {
+            println("User $username successfully authenticated.")
+            return UsernamePasswordAuthenticationToken(userDetails, password, userDetails.authorities)
         } else {
+            println("Password mismatch for user $username.")
             throw BadCredentialsException("Invalid credentials")
         }
     }
