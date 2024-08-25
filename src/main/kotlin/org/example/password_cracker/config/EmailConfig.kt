@@ -1,6 +1,6 @@
 package org.example.password_cracker.config
 
-import io.github.cdimascio.dotenv.Dotenv
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.mail.javamail.JavaMailSender
@@ -9,20 +9,37 @@ import java.util.*
 
 @Configuration
 class EmailConfig {
+    @Value("\${spring.mail.host}")
+    private lateinit var mailHost: String
+
+    @Value("\${spring.mail.port}")
+    private lateinit var mailPort: String
+
+    @Value("\${spring.mail.username}")
+    private lateinit var mailUsername: String
+
+    @Value("\${spring.mail.password}")
+    private lateinit var mailPassword: String
+
+    @Value("\${spring.mail.properties.mail.smtp.auth}")
+    private lateinit var mailSmtpAuth: String
+
+    @Value("\${spring.mail.properties.mail.smtp.starttls.enable}")
+    private lateinit var mailSmtpStarttls: String
+
     @Bean
     fun javaMailSender(): JavaMailSender {
-        val properties = Properties()
-        val dotenv = Dotenv.configure().load()
         val mailSender = JavaMailSenderImpl()
+        val properties = Properties()
 
-        properties["mail.smtp.auth"] = dotenv["MAIL_SMTP_AUTH"]
-        properties["mail.smtp.starttls.enable"] = dotenv["MAIL_SMTP_STARTTLS_ENABLE"]
+        properties["mail.smtp.auth"] = mailSmtpAuth
+        properties["mail.smtp.starttls.enable"] = mailSmtpStarttls
 
         mailSender.javaMailProperties = properties
-        mailSender.host = dotenv["MAIL_HOST"]
-        mailSender.port = dotenv["MAIL_PORT"]?.toIntOrNull() ?: 587
-        mailSender.username = dotenv["MAIL_USERNAME"]
-        mailSender.password = dotenv["MAIL_PASSWORD"]
+        mailSender.host = mailHost
+        mailSender.port = mailPort.toIntOrNull() ?: 587
+        mailSender.username = mailUsername
+        mailSender.password = mailPassword
 
         return mailSender
     }
