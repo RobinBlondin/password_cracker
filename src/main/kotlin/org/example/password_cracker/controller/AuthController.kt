@@ -33,6 +33,7 @@ class AuthController(val authService: AuthService) {
     fun registerPost(@ModelAttribute dto: RegisterDTO, rda:RedirectAttributes): String = authService.registerProcess(rda, dto)
 
 
+
     @GetMapping("/verify/{tokenId}")
     fun verify(@PathVariable tokenId: String): String = authService.verificationProcess(tokenId)
 

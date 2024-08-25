@@ -9,55 +9,71 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 @Service
 class AuthService(val tokenService: TokenService, val userService: UserService, val emailService: EmailService) {
     fun loadRegisterPageModelAttributes(model: Model): String {
-        if(!model.containsAttribute("password")) {
+        if(!model.containsAttribute("dto")) {
+            model.addAttribute("dto", RegisterDTO())
+        }
+
+        if (!model.containsAttribute("password")) {
             model.addAttribute("password", false)
-        } else if(!model.containsAttribute("email")) {
+        }
+
+        if (!model.containsAttribute("email")) {
             model.addAttribute("email", false)
         }
-        model.addAttribute("dto", RegisterDTO())
+
         return "register"
     }
 
     fun registerProcess(rda: RedirectAttributes, dto: RegisterDTO): String {
-        rda.addFlashAttribute("dto", dto)
-
-        if(dto.password != dto.confirmPassword) {
+        if (dto.password != dto.confirmPassword) {
             rda.addFlashAttribute("password", true)
+            rda.addFlashAttribute("dto", dto)
             return "redirect:/register"
-        } else if (userService.findUserByEmail(dto.email!!).isPresent) {
-            rda.addFlashAttribute("email", true)
-            return "redirect:/register?email=true"
-        } else {
-            val token = register(dto)
-            emailService.sendVerificationEmail(dto.email!!, token!!)
-            return "redirect:/login?register=true"
         }
+
+        if (userService.findUserByEmail(dto.email!!).isPresent) {
+            rda.addFlashAttribute("email", true)
+            rda.addFlashAttribute("dto", dto)
+            return "redirect:/register"
+        }
+
+        val token = createUserAndToken(dto)
+        val email = dto.email ?: return "redirect:/register?error=true"
+        emailService.sendVerificationEmail(email, token)
+
+        return "redirect:/login?register=true"
     }
 
-    fun register(dto: RegisterDTO): String? {
+    fun createUserAndToken(dto: RegisterDTO): String {
         val user = userService.dtoTOUser(dto)
         val token = Token(user = user)
 
         userService.save(user)
         tokenService.save(token)
-        return token.token
+
+        val tokenName = token.token ?: return "redirect:/register?error=true"
+        return tokenName
     }
 
     fun verificationProcess(tokenId: String): String {
         val token = tokenService.findToken(tokenId)
 
-        if(token.isEmpty) {
+        if (token.isEmpty) {
             return "redirect:/login?notFound=true"
-        } else if(token.get().isExpired()) {
+        }
+
+        val existingToken = token.get()
+        if (existingToken.isExpired()) {
             tokenService.deleteToken(tokenId)
             userService.deleteUser(token.get().user!!)
             return "redirect:/login?expired=true"
-        } else {
-            val user = token.get().user
-            user!!.enabled = true
-            userService.save(user)
-            tokenService.deleteToken(tokenId)
-            return "redirect:/login?verified=true"
         }
+
+        val user = existingToken.user ?: return "redirect:/login?notFound=true"
+        user.enabled = true
+        userService.save(user)
+        tokenService.deleteToken(tokenId)
+        return "redirect:/login?verified=true"
+
     }
 }
