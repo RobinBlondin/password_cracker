@@ -19,8 +19,7 @@ class DataInitializer {
             return@ApplicationRunner
         }
 
-        val admin = User(id = UUID.randomUUID(), email = "admin@cracker.se", password = passwordEncoder.encode("password"), role = Role.ADMIN)
-        val client = User(id = UUID.randomUUID(), email = "client@cracker.se", password = passwordEncoder.encode("password"), role = Role.CLIENT)
-        userRepository.saveAll(listOf(admin, client))
+        val admin = User(id = UUID.randomUUID(), enabled = true,  email = "admin@cracker.se", password = passwordEncoder.encode("password"), role = Role.ADMIN)
+        userRepository.save(admin)
     }
 }
