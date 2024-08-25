@@ -1,5 +1,6 @@
 package org.example.password_cracker.config
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Lazy
@@ -20,6 +21,9 @@ class SecurityConfig(
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+
+    @Autowired
+    private lateinit var authenticationFailureHandler: CustomAuthenticationFailureHandler
 
     @Bean
      fun configure(http: HttpSecurity): SecurityFilterChain =
@@ -44,7 +48,7 @@ class SecurityConfig(
                 formLogin
                     .loginPage("/login")
                     .defaultSuccessUrl("/home", true)
-                    .failureUrl("/login?error=true")
+                    .failureHandler(authenticationFailureHandler)
                     .permitAll()
             }
             .logout { logout ->
