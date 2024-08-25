@@ -11,8 +11,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 @Controller
 class HomeController(@Autowired private val homeService: HomeService) {
 
-
-
     @GetMapping("/home")
     fun home(): String = "home"
 
@@ -26,7 +24,6 @@ class HomeController(@Autowired private val homeService: HomeService) {
 
         return "redirect:/home"
     }
-
 
     @GetMapping("/crack")
     fun crack(): String = "crack"
