@@ -14,6 +14,7 @@ import java.util.UUID
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "_user")
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,4 +40,5 @@ class User(
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun isEnabled(): Boolean = enabled
+
 }
