@@ -19,8 +19,8 @@
     <div th:if="${param.verified}" class="success-message">
         Account has been verified. Please login.
     </div>
-  <div th:if="${param.error}" class="input-group">
-    Invalid credentials
+  <div th:if="${error_message}" th:text="${error_message}" class="error-message input-group">
+
   </div>
   <div th:if="${param.register}" class="success-message">
     An email has been sent to your email address. Please verify your account.
