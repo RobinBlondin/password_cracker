@@ -1,7 +1,7 @@
 package org.example.password_cracker.controller
 
 import jakarta.servlet.http.HttpServletRequest
-import org.example.password_cracker.dto.registerDTO
+import org.example.password_cracker.dto.RegisterDTO
 import org.example.password_cracker.service.AuthService
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -30,7 +30,7 @@ class AuthController(val authService: AuthService) {
 
 
     @PostMapping("/register")
-    fun registerPost(@ModelAttribute dto: registerDTO, rda:RedirectAttributes): String = authService.registerProcess(rda, dto)
+    fun registerPost(@ModelAttribute dto: RegisterDTO, rda:RedirectAttributes): String = authService.registerProcess(rda, dto)
 
 
     @GetMapping("/verify/{tokenId}")

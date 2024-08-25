@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-class registerDTO {
+class RegisterDTO {
     var name: String? = null
     var email: String? = null
     var password: String? = null

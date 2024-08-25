@@ -1,6 +1,6 @@
 package org.example.password_cracker.service
 
-import org.example.password_cracker.dto.registerDTO
+import org.example.password_cracker.dto.RegisterDTO
 import org.example.password_cracker.model.Token
 import org.springframework.stereotype.Service
 import org.springframework.ui.Model
@@ -14,11 +14,11 @@ class AuthService(val tokenService: TokenService, val userService: UserService, 
         } else if(!model.containsAttribute("email")) {
             model.addAttribute("email", false)
         }
-        model.addAttribute("dto", registerDTO())
+        model.addAttribute("dto", RegisterDTO())
         return "register"
     }
 
-    fun registerProcess(rda: RedirectAttributes, dto: registerDTO): String {
+    fun registerProcess(rda: RedirectAttributes, dto: RegisterDTO): String {
         rda.addFlashAttribute("dto", dto)
 
         if(dto.password != dto.confirmPassword) {
@@ -34,7 +34,7 @@ class AuthService(val tokenService: TokenService, val userService: UserService, 
         }
     }
 
-    fun register(dto: registerDTO): String? {
+    fun register(dto: RegisterDTO): String? {
         val user = userService.dtoTOUser(dto)
         val token = Token(user = user)
 

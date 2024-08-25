@@ -1,6 +1,6 @@
 package org.example.password_cracker.service
 
-import org.example.password_cracker.dto.registerDTO
+import org.example.password_cracker.dto.RegisterDTO
 import org.example.password_cracker.enums.Role
 import org.example.password_cracker.model.User
 import org.example.password_cracker.repository.UserRepository
@@ -21,7 +21,7 @@ class UserService(
         userRepository.delete(user)
     }
 
-    fun dtoTOUser(dto: registerDTO): User {
+    fun dtoTOUser(dto: RegisterDTO): User {
         return User(
             email = dto.email,
             password = passwordEncoder.encode(dto.password),
