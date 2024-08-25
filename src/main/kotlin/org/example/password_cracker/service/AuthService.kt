@@ -26,13 +26,13 @@ class AuthService(val tokenService: TokenService, val userService: UserService, 
 
     fun registerProcess(rda: RedirectAttributes, dto: RegisterDTO): String {
         if (dto.password != dto.confirmPassword) {
-            rda.addFlashAttribute("password", true)
+            rda.addFlashAttribute("message", "Passwords do not match")
             rda.addFlashAttribute("dto", dto)
             return "redirect:/register"
         }
 
         if (userService.findUserByEmail(dto.email!!).isPresent) {
-            rda.addFlashAttribute("email", true)
+            rda.addFlashAttribute("message", "Email already in use")
             rda.addFlashAttribute("dto", dto)
             return "redirect:/register"
         }
@@ -40,8 +40,8 @@ class AuthService(val tokenService: TokenService, val userService: UserService, 
         val token = createUserAndToken(dto)
         val email = dto.email ?: return "redirect:/register?error=true"
         emailService.sendVerificationEmail(email, token)
-
-        return "redirect:/login?register=true"
+        rda.addFlashAttribute("message", "Verification email sent")
+        return "redirect:/login"
     }
 
     fun createUserAndToken(dto: RegisterDTO): String {
@@ -55,25 +55,28 @@ class AuthService(val tokenService: TokenService, val userService: UserService, 
         return tokenName
     }
 
-    fun verificationProcess(tokenId: String): String {
+    fun verificationProcess(tokenId: String, rda: RedirectAttributes): String {
         val token = tokenService.findToken(tokenId)
 
         if (token.isEmpty) {
-            return "redirect:/login?notFound=true"
+            rda.addFlashAttribute("message", "Verification token not found")
+            return "redirect:/login"
         }
 
         val existingToken = token.get()
         if (existingToken.isExpired()) {
             tokenService.deleteToken(tokenId)
             userService.deleteUser(token.get().user!!)
-            return "redirect:/login?expired=true"
+            rda.addFlashAttribute("message", "Verification token expired. Please register again.")
+            return "redirect:/login"
         }
 
         val user = existingToken.user ?: return "redirect:/login?notFound=true"
         user.enabled = true
         userService.save(user)
         tokenService.deleteToken(tokenId)
-        return "redirect:/login?verified=true"
+        rda.addFlashAttribute("message", "Account has been verified. Please login.")
+        return "redirect:/login"
 
     }
 }

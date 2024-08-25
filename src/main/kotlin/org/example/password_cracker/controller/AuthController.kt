@@ -35,6 +35,6 @@ class AuthController(val authService: AuthService) {
 
 
     @GetMapping("/verify/{tokenId}")
-    fun verify(@PathVariable tokenId: String): String = authService.verificationProcess(tokenId)
+    fun verify(@PathVariable tokenId: String, rda: RedirectAttributes): String = authService.verificationProcess(tokenId, rda)
 
 }
