@@ -17,15 +17,7 @@ class TokenService(val tokenRepository: TokenRepository) {
         tokenRepository.findByToken(token).ifPresent { tokenRepository.delete(it) }
     }
 
-    fun deleteAllExpiredTokens() {
-        tokenRepository.findAll().forEach {
-            if(it.isExpired()) {
-                tokenRepository.delete(it)
-            }
-        }
-    }
-
     fun save(token: Token) {
         tokenRepository.save(token)
     }
-}
+ }
