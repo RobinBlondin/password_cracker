@@ -13,7 +13,7 @@ class ParsePasswords(): CommandLineRunner{
         println("Reading file")
         val result = File("hashes.txt")
         File("passwords.txt").readLines().forEach {
-                val hash = homeService.hashPassword(it, "SHA-256")
+                val hash = homeService.encode(it, "SHA-256")
                 result.appendText("$it : $hash\n")
             }
         println("File has been parsed")
