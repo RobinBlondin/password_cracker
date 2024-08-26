@@ -1,7 +1,6 @@
 package org.example.password_cracker.service
 
 import lombok.Data
-import org.example.password_cracker.WriteFile
 import org.springframework.stereotype.Service
 import java.security.MessageDigest
 
@@ -24,8 +23,7 @@ class HomeService {
         val hashes = hashPassword(password)
         sha256Map[password] = hashes.first
         md5Map[password] = hashes.second
-
-        WriteFile(this).run()
+        
         return hashes
     }
 
