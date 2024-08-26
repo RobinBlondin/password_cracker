@@ -19,6 +19,11 @@ class HomeService {
         return md.digest(password.toByteArray()).fold("") { str, it -> str + "%02x".format(it) }
     }
 
+    fun isHexadecimal(input: String): Boolean {
+        val hexRegex = Regex("^[0-9a-fA-F]+$")
+        return hexRegex.matches(input)
+    }
+
     fun crackHash(hash: String): String {
         val result = if(hash.length == 64) {
             sha256Map.filterValues { it == hash }.keys.firstOrNull()
