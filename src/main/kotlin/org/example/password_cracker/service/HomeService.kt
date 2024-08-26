@@ -2,6 +2,7 @@ package org.example.password_cracker.service
 
 import lombok.Data
 import org.springframework.stereotype.Service
+import java.io.File
 import java.security.MessageDigest
 
 @Service
@@ -25,15 +26,23 @@ class HomeService {
     }
 
     fun crackHash(hash: String): String {
-        val result = if(hash.length == 64) {
-            sha256Map.filterValues { it == hash }.keys.firstOrNull()
-        } else {
-            md5Map.filterValues { it == hash }.keys.firstOrNull()
-        }
+        val list = File("sorted_hashes.txt").readLines()
 
-        return when(result) {
-            null -> "Password not found"
-            else -> "Password: $result"
+        var startIndex = 0
+        var endIndex = list.size - 1
+
+        while(startIndex <= endIndex) {
+            val middleIndex = (startIndex + endIndex) / 2
+            val (password, currentHash) = list[middleIndex].split(" : ")
+
+            if(hash < currentHash) {
+                endIndex = middleIndex - 1
+            } else if (hash > currentHash)  {
+                startIndex = middleIndex + 1
+            } else {
+                return "Password: $password"
+            }
         }
+        return "Could not find password"
     }
 }
