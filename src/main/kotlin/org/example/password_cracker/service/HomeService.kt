@@ -7,24 +7,16 @@ import java.security.MessageDigest
 @Service
 @Data
 class HomeService {
-    val sha256Map = mutableMapOf<String, String>()
-    val md5Map = mutableMapOf<String, String>()
-
-    private fun hashPassword(password: String): Pair<String, String> {
-        val sha = MessageDigest.getInstance("SHA-256")
-        val md = MessageDigest.getInstance("MD5")
-        val shaHash = sha.digest(password.toByteArray()).fold("") { str, it -> str + "%02x".format(it) }
-        val mdHash = md.digest(password.toByteArray()).fold("") { str, it -> str + "%02x".format(it) }
+    fun hashPassword(password: String): Pair<String, String> {
+        val shaHash = encode(password, "SHA-256")
+        val mdHash = encode(password, "MD5")
 
         return Pair(shaHash, mdHash)
     }
 
-    fun saveEntryToFile(password: String): Pair<String, String> {
-        val hashes = hashPassword(password)
-        sha256Map[password] = hashes.first
-        md5Map[password] = hashes.second
-        
-        return hashes
+    fun encode(password: String, algorithm: String): String {
+        val md = MessageDigest.getInstance(algorithm)
+        return md.digest(password.toByteArray()).fold("") { str, it -> str + "%02x".format(it) }
     }
 
     fun crackHash(hash: String): String {
