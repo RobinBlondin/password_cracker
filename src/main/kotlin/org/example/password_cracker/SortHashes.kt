@@ -7,7 +7,7 @@ import java.io.File
 
 class SortHashes: CommandLineRunner {
 
-    fun merge(left: List<String>, right: List<String>): List<String> {
+    private fun merge(left: List<String>, right: List<String>): List<String> {
         var leftIndex = 0
         var rightIndex = 0
         val sortedList = mutableListOf<String>()
@@ -36,7 +36,7 @@ class SortHashes: CommandLineRunner {
         return sortedList
     }
 
-    fun mergeSort(list: List<String>): List<String> {
+    private fun mergeSort(list: List<String>): List<String> {
         if (list.size <= 1) {
             return list
         }
