@@ -16,20 +16,16 @@ fun main(args: Array<String>) {
 		System.setProperty(entry.key, entry.value)
 	}
 
-
-	when(args[0]) {
-		"" -> runApplication<PasswordCrackerApplication>(*args)
-		"hashPasswords" -> {
-			val application = SpringApplication(ParsePasswords::class.java)
-			application.webApplicationType = WebApplicationType.NONE
-			application.run(*args)
-		}
-		"sortHashes" -> {
-			val application = SpringApplication(SortHashes::class.java)
-			application.webApplicationType = WebApplicationType.NONE
-			application.run(*args)
-		}
+	if(args.isEmpty()) {
+		runApplication<PasswordCrackerApplication>(*args)
+	} else if(args[0] == "hashPasswords") {
+		val application = SpringApplication(ParsePasswords::class.java)
+		application.webApplicationType = WebApplicationType.NONE
+		application.run(*args)
+	} else if(args[0] == "sortHashes") {
+		val application = SpringApplication(SortHashes::class.java)
+		application.webApplicationType = WebApplicationType.NONE
+		application.run(*args)
 	}
-
 
 }
