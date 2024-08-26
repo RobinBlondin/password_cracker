@@ -10,8 +10,12 @@
     <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
-     <div th:if="${message} != ''" th:text="${message}" class="error-message input-group"
-        th:style="${message.contains('password')}? 'color: #5b0000; background-color: rgba(252, 97, 97, 0.34);': 'color: rgb(0, 84, 0); background-color: rgba(66, 133, 66, 0.5);'"></div>
+    <th:block th:if="${message} != null">
+     <div th:text="${message}"
+          class=""
+          th:classappend="${message != null && message.contains('Password')} ? 'error-container' : 'success-container'">
+     </div>
+    </th:block>
     <br>
     <form action="/register" th:object="${dto}" method="post">
         <div class="input-group">
