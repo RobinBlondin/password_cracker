@@ -30,6 +30,11 @@ class HomeController(@Autowired private val homeService: HomeService) {
 
     @PostMapping("/crack")
     fun crackPost(@RequestParam("search") hash: String, rda: RedirectAttributes): String {
+        if(!homeService.isHexadecimal(hash) || hash.length != 64) {
+            rda.addFlashAttribute("result", "Invalid SHA256 hash")
+            return "redirect:/crack"
+        }
+
         val result = homeService.crackHash(hash)
         rda.addFlashAttribute("result", result)
         return "redirect:/crack"
