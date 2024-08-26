@@ -17,7 +17,7 @@ class HomeController(@Autowired private val homeService: HomeService) {
     @PostMapping("/home")
     fun homePost(@RequestParam("search") input: String, rda: RedirectAttributes): String {
         if(input.isNotEmpty()) {
-            val result = homeService.saveEntryToFile(input)
+            val result = homeService.hashPassword(input)
             rda.addFlashAttribute("sha256", result.first)
             rda.addFlashAttribute("md5", result.second)
         }
