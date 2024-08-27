@@ -8,6 +8,8 @@ import java.security.MessageDigest
 @Service
 @Data
 class HomeService {
+    val list = File("sorted_hashes.txt").readLines()
+
     fun hashPassword(password: String): Pair<String, String> {
         val shaHash = encode(password, "SHA-256")
         val mdHash = encode(password, "MD5")
@@ -26,8 +28,6 @@ class HomeService {
     }
 
     fun crackHash(hash: String): String {
-        val list = File("sorted_hashes.txt").readLines()
-
         var startIndex = 0
         var endIndex = list.size - 1
 
