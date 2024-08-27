@@ -53,10 +53,12 @@ class SortHashes: CommandLineRunner {
 
 
     override fun run(vararg args: String?) {
+        println("Sorting hashes")
         val hashes = File("hashes.txt").readLines()
         val sortedHashes = mergeSort(hashes)
 
         File("sorted_hashes.txt").writeText(sortedHashes.joinToString("\n"))
+        println("Hashes have been sorted")
     }
 
 }
