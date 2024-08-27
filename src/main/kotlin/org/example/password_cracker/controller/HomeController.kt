@@ -11,15 +11,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes
 @Controller
 class HomeController(@Autowired private val homeService: HomeService) {
 
-
-
     @GetMapping("/home")
     fun home(): String = "home"
 
     @PostMapping("/home")
     fun homePost(@RequestParam("search") input: String, rda: RedirectAttributes): String {
         if(input.isNotEmpty()) {
-            val result = homeService.saveEntryToFile(input)
+            val result = homeService.hashPassword(input)
             rda.addFlashAttribute("sha256", result.first)
             rda.addFlashAttribute("md5", result.second)
         }
@@ -27,12 +25,16 @@ class HomeController(@Autowired private val homeService: HomeService) {
         return "redirect:/home"
     }
 
-
     @GetMapping("/crack")
     fun crack(): String = "crack"
 
     @PostMapping("/crack")
     fun crackPost(@RequestParam("search") hash: String, rda: RedirectAttributes): String {
+        if(!homeService.isHexadecimal(hash) || hash.length != 64) {
+            rda.addFlashAttribute("result", "Invalid SHA256 hash")
+            return "redirect:/crack"
+        }
+
         val result = homeService.crackHash(hash)
         rda.addFlashAttribute("result", result)
         return "redirect:/crack"
