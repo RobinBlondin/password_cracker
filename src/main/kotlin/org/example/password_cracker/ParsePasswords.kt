@@ -2,7 +2,6 @@ package org.example.password_cracker
 
 import org.example.password_cracker.service.HomeService
 import org.springframework.boot.CommandLineRunner
-import org.springframework.stereotype.Component
 import java.io.File
 
 
@@ -12,10 +11,15 @@ class ParsePasswords(): CommandLineRunner{
     override fun run(vararg args: String?) {
         println("Reading file")
         val result = File("hashes.txt")
-        File("passwords.txt").readLines().forEach {
-                val hash = homeService.encode(it, "SHA-256")
-                result.appendText("$it : $hash\n")
+        File("passwords.txt").useLines { lines ->
+            File("hashes.txt").printWriter().use { writer ->
+                lines.forEach {
+                    val hash = homeService.encode(it, "SHA-256")
+                    writer.println("$it : $hash")
+                }
             }
-        println("File has been parsed")
+
         }
+        println("File has been parsed")
+    }
 }
