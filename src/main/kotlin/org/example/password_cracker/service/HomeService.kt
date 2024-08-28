@@ -2,14 +2,12 @@ package org.example.password_cracker.service
 
 import lombok.Data
 import org.springframework.stereotype.Service
-import java.io.File
+import java.io.RandomAccessFile
 import java.security.MessageDigest
 
 @Service
 @Data
 class HomeService {
-    val list = File("sorted_hashes.txt").readLines()
-
     fun hashPassword(password: String): Pair<String, String> {
         val shaHash = encode(password, "SHA-256")
         val mdHash = encode(password, "MD5")
@@ -28,21 +26,33 @@ class HomeService {
     }
 
     fun crackHash(hash: String): String {
-        var startIndex = 0
-        var endIndex = list.size - 1
+        RandomAccessFile("files/sorted_hashes.txt", "r").use { file ->
+            var startIndex = 0L
+            var endIndex = file.length() - 1
 
-        while(startIndex <= endIndex) {
-            val middleIndex = (startIndex + endIndex) / 2
-            val (password, currentHash) = list[middleIndex].split(" : ")
+            while(startIndex <= endIndex) {
+                val middleIndex = (startIndex + endIndex) / 2
+                file.seek(middleIndex)
 
-            if(hash < currentHash) {
-                endIndex = middleIndex - 1
-            } else if (hash > currentHash)  {
-                startIndex = middleIndex + 1
-            } else {
-                return "Password: $password"
+                if(middleIndex != 0L) {
+                    file.readLine()
+                }
+
+                val line = file.readLine()
+
+                if(line != null) {
+                    val currentHash = line.split(" : ")[1]
+                    when {
+                        hash < currentHash -> endIndex = middleIndex - 1
+                        hash > currentHash -> startIndex = file.filePointer
+                        else -> return "Password: ${line.split(" : ")[0]}"
+                    }
+                } else {
+                    break
+                }
             }
         }
+
         return "Could not find password"
     }
 }
