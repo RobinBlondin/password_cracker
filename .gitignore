@@ -43,4 +43,4 @@ gradle/wrapper/gradle-wrapper.jar
 files/hashes.txt
 passwords.txt
 files/sorted_hashes.txt
-/files/*
+/files/*.txt
