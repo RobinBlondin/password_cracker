@@ -5,12 +5,12 @@ import org.springframework.boot.CommandLineRunner
 import java.io.File
 
 
-class ParsePasswords(): CommandLineRunner{
-    val homeService = HomeService()
+class ParsePasswords: CommandLineRunner{
+    private val homeService = HomeService()
 
     override fun run(vararg args: String?) {
         println("Reading file")
-        val result = File("hashes.txt")
+        File("hashes.txt")
         File("passwords.txt").useLines { lines ->
             File("hashes.txt").printWriter().use { writer ->
                 lines.forEach {
