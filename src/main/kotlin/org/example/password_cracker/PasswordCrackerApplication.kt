@@ -4,7 +4,6 @@ import io.github.cdimascio.dotenv.Dotenv
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.WebApplicationType
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
@@ -19,7 +18,7 @@ fun main(args: Array<String>) {
 	if(args.isEmpty()) {
 		runApplication<PasswordCrackerApplication>(*args)
 	} else if(args[0] == "hashPasswords") {
-		val application = SpringApplication(ParsePasswords::class.java)
+		val application = SpringApplication(HashPasswords::class.java)
 		application.webApplicationType = WebApplicationType.NONE
 		application.run(*args)
 	} else if(args[0] == "sortHashes") {
