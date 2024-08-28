@@ -10,9 +10,8 @@ class ParsePasswords: CommandLineRunner{
 
     override fun run(vararg args: String?) {
         println("Reading file")
-        File("hashes.txt")
-        File("passwords.txt").useLines { lines ->
-            File("hashes.txt").printWriter().use { writer ->
+        File("files/passwords.txt").useLines { lines ->
+            File("files/hashes.txt").printWriter().use { writer ->
                 lines.forEach {
                     val hash = homeService.encode(it, "SHA-256")
                     writer.println("$it : $hash")
