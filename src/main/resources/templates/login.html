@@ -10,7 +10,8 @@
   <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
-  <div th:if="${message} != ''" th:text="${message}" class="error-message input-group"></div>
+  <div th:if="${error_message} != null" th:text="${error_message}" class="error-container input-group"></div>
+  <div th:if="${message} != ''" th:text="${message}" class="success-container input-group"></div>
   <br>
   <form action="/login" method="post">
     <div class="input-group">

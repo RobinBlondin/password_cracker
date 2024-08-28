@@ -204,21 +204,11 @@ h3 {
 }
 
 .error-container {
-    color: #5b0000;
-    background-color: rgba(252, 97, 97, 0.34);
+    color: #ff0000;
 }
 
 .success-container {
-    color: rgb(0, 84, 0);
-    background-color: rgba(66, 133, 66, 0.5);
-}
-
-.success-container, .error-container {
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: #252525 0 0 10px;
-    margin-top: 20px;
-    text-align: center;
+    color: rgb(0, 255, 0);
 }
 
 .input-group {

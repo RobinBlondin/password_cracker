@@ -10,12 +10,9 @@
     <img src="/images/logo.png" alt="" class="logo">
 </div>
 <div class="login-container">
-    <th:block th:if="${message} != null">
-     <div th:text="${message}"
-          class=""
-          th:classappend="${message != null && message.contains('Password')} ? 'error-container' : 'success-container'">
-     </div>
-    </th:block>
+
+     <div th:if="${message} != ''" th:text="${message}" class="error-container input-group"></div>
+
     <br>
     <form action="/register" th:object="${dto}" method="post">
         <div class="input-group">
