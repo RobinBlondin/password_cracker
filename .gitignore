@@ -40,6 +40,7 @@ out/
 .kotlin
 gradle/wrapper/gradle-wrapper.jar
 .env
-hashes.txt
+files/hashes.txt
 passwords.txt
-sorted_hashes.txt
+files/sorted_hashes.txt
+/files/sorted_chunks/*
