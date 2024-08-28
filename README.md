@@ -8,7 +8,7 @@
 
 Before you start, ensure you have the following installed:
 
-- [Java 11+](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- [Java 17+](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
   
   Make sure to update build.gradle.kts with the version you run
   ```kotlin
@@ -44,6 +44,8 @@ Before you start, ensure you have the following installed:
    git clone https://github.com/yourusername/password_cracker.git
    cd password_cracker```
 
+   
+
 2. **Prepare the Passwords file**
    
    Create a file named `passwords.txt` inside the `/files` directory. This file should contain one password per line.
@@ -58,23 +60,43 @@ Before you start, ensure you have the following installed:
    password2
    password3
    password4
-   ```
+   ``` 
+
+   
 
 3. **Generate hashes**
 
    To generate a file `hashes.txt` containing each password and its corresponding hash, run the `HashPasswords` command-line runner withe the argument `hashPasswords`:
+   
+   **Unix:**
    ```bash
    ./gradlew bootRun --args='hashPasswords'
    ```
-   This will create a file named `hashes.txt` inside the `/files` directory. This may take a while depending on the size of the file.
+   **Windows:**
+   ```bash
+   gradlew.bat bootRun --args='hashPasswords'
+   ``` 
+   This will create a file named `hashes.txt` inside the `/files` directory. This may take a while depending on the size of the file.  
+
+   
 
 4. **Sort the hashes**
 
    To sort the `hashes.txt` file by hash value, run the `SortHashes` command-line runner with the argument `sortHashes`:
+   
+   Unix:
     ```bash
     ./gradlew bootRun --args='sortHashes'
     ```
-    This will create a sorted version of `hashes.txt` in the `/files` directory. This may take a while depending on the size of the original file.
+    Windows:
+   ```bash
+   gradlew.bat bootRun --args='sortHashes'
+   ``` 
+   
+
+    This will create a sorted version of `hashes.txt` in the `/files` directory. This may take a while depending on the size of the original file. 
+
+   
 
 5. **Configure the `.env` File**
 
@@ -101,14 +123,22 @@ Before you start, ensure you have the following installed:
     SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
     SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     ```
-    Replace the placeholder values with your actual database credentials, Github OAuth client details and email server configuration.
+    Replace the placeholder values with your actual database credentials, Github OAuth client details and email server configuration. 
+
+   
 
 6.  **Run the application**
 
    Finally, start the application.
-   ``` 
+   
+   **Unix:**
+   ```bash
    ./gradlew bootRun
    ```
+   **Windows:**
+   ```bash
+   gradlew.bat bootRun
+   ``` 
     
    Open your web browswer and navigate to `http://localhost:8080`. You can create an account or login using your GitHub account to access the password cracker functionality.
 
