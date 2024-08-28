@@ -34,7 +34,7 @@ Before you start, ensure you have the following installed:
    GRANT ALL PRIVILEGES ON password_cracker.* TO 'root'@'localhost';
    FLUSH PRIVILEGES;
    ```
-
+<br>
 
 ### Setup
 
@@ -62,7 +62,7 @@ Before you start, ensure you have the following installed:
    password4
    ``` 
 
-   
+   <br>
 
 3. **Generate hashes**
 
@@ -78,7 +78,7 @@ Before you start, ensure you have the following installed:
    ``` 
    This will create a file named `hashes.txt` inside the `/files` directory. This may take a while depending on the size of the file.  
 
-   
+   <br>
 
 4. **Sort the hashes**
 
@@ -96,7 +96,7 @@ Before you start, ensure you have the following installed:
 
     This will create a sorted version of `hashes.txt` in the `/files` directory. This may take a while depending on the size of the original file. 
 
-   
+   <br>
 
 5. **Configure the `.env` File**
 
@@ -125,7 +125,7 @@ Before you start, ensure you have the following installed:
     ```
     Replace the placeholder values with your actual database credentials, Github OAuth client details and email server configuration. 
 
-   
+   <br>
 
 6.  **Run the application**
 
