@@ -44,7 +44,7 @@ class HomeService {
                     val currentHash = line.split(" : ")[1]
                     when {
                         hash < currentHash -> endIndex = middleIndex - 1
-                        hash > currentHash -> startIndex = file.filePointer
+                        hash > currentHash -> startIndex = middleIndex + 1
                         else -> return "Password: ${line.split(" : ")[0]}"
                     }
                 } else {
