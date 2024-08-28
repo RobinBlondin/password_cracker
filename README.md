@@ -113,7 +113,7 @@ Before you start, ensure you have the following installed:
     # GitHub OAuth
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_ID=<your-github-client-id>
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET=<your-github-client-secret>
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_REDIRECT_URI=http://localhost:8080/login/oauth2/code/github
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_REDIRECT_URI=<your-github-redirect-uri>
 
     # Email Configuration
     SPRING_MAIL_HOST=<your-mail-host>
