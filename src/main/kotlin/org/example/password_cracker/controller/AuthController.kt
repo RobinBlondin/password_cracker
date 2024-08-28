@@ -22,6 +22,11 @@ class AuthController(val authService: AuthService) {
         if(error != null) {
             model.addAttribute("error_message", error)
         }
+
+        if(!model.containsAttribute("message")) {
+            model.addAttribute("message", "")
+        }
+
         return "login"
     }
 
