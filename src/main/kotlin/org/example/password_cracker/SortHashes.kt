@@ -100,21 +100,12 @@ class SortHashes : CommandLineRunner {
         println("Chunk $chunkNumber finished after ${duration.toMinutes()} min - ${duration.toSeconds() % 60}s")
     }
 
-    private fun deleteChunks(files: List<String>) {
+    private fun deleteChunksAfterMerge(files: List<String>) {
         files.forEach { fileName ->
             val file = File(fileName)
             if (file.exists()) {
                 file.delete()
             }
-        }
-    }
-
-
-    private fun sortAndWriteListToFile(fileName: String, list: List<String>) {
-        list.sortedBy { it.substringAfter(" : ") }
-        File(fileName).bufferedWriter().use { writer ->
-            val listToString = list.joinToString("\n")
-            writer.write(listToString)
         }
     }
 
