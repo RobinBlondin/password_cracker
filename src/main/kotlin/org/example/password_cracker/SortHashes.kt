@@ -3,6 +3,7 @@ package org.example.password_cracker
 import org.springframework.boot.CommandLineRunner
 import java.io.BufferedReader
 import java.io.File
+import java.io.RandomAccessFile
 import java.time.Duration
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -11,50 +12,50 @@ import java.util.*
 class SortHashes : CommandLineRunner {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
-    private fun merge(left: List<String>, right: List<String>): List<String> {
-        var leftIndex = 0
-        var rightIndex = 0
-        val sortedList = mutableListOf<String>()
+    private fun splitFile(inputFile: String, chunkSize: Int) {
+        val chunkSizeInBytes = chunkSize * 1024 * 1024L
 
-        while (leftIndex < left.size && rightIndex < right.size) {
-            val (leftHash, rightHash) = left[leftIndex].split(" : ")[1] to right[rightIndex].split(" : ")[1]
-            if (leftHash < rightHash) {
-                sortedList.add(left[leftIndex])
-                leftIndex++
-            } else {
-                sortedList.add(right[rightIndex])
-                rightIndex++
+        val startTime = LocalTime.now()
+        println("Splitting file at ${formatter.format(startTime)}")
+        RandomAccessFile(inputFile, "r").use { file ->
+            var chunkNumber = 1
+            val buffer = ByteArray(chunkSizeInBytes.toInt())
+
+            while (true) {
+                val bytesRead = file.read(buffer)
+
+                if (bytesRead == -1) {
+                    break
+                }
+
+                var adjustedBytesRead = bytesRead
+
+                for (i in bytesRead - 1 downTo 0) {
+                    if (buffer[i] == '\n'.code.toByte()) {
+                        adjustedBytesRead = i + 1
+                        break
+                    }
+                }
+
+                val outputFileName = "files/sorted_chunks/chunk_$chunkNumber.txt"
+
+                val sortedString = String(buffer.copyOfRange(0, adjustedBytesRead))
+                    .trim()
+                    .split("\n")
+                    .sortedBy { it.substringAfter(" : ") }
+                    .joinToString("\n")
+                countAndPrintDurationOfChunkSplit(startTime, chunkNumber)
+                File(outputFileName).writeText(sortedString)
+
+                file.seek(file.filePointer - (bytesRead - adjustedBytesRead))
+
+                chunkNumber++
             }
         }
-
-        while (leftIndex < left.size) {
-            sortedList.add(left[leftIndex])
-            leftIndex++
-        }
-
-        while (rightIndex < right.size) {
-            sortedList.add(right[rightIndex])
-            rightIndex++
-        }
-
-        return sortedList
+        val end = LocalTime.now()
+        println("Completed after ${Duration.between(startTime, end).toMinutes()} minutes")
     }
 
-
-    private fun mergeSort(list: List<String>): List<String> {
-        if (list.size <= 1) {
-            return list
-        }
-
-        val middle = list.size / 2
-        var left = list.subList(0, middle)
-        var right = list.subList(middle, list.size)
-
-        left = mergeSort(left)
-        right = mergeSort(right)
-
-        return merge(left, right)
-    }
 
     private fun splitFileIntoSortedChunks(inputFile: String, chunkSize: Int) {
         val list = mutableListOf<String>()
@@ -67,7 +68,7 @@ class SortHashes : CommandLineRunner {
                 list.add(line)
                 totalLinesRead++
                 if (list.size == chunkSize) {
-                    sortAndWriteListToFile("files/sorted_chunks/chunk$count.txt", list)
+                    sortAndWriteListToFile("files/sorted_chunks/chunk_$count.txt", list)
                     countAndPrintDurationOfChunkSplit(startTime, count)
                     count++
                     list.clear()
@@ -136,9 +137,9 @@ class SortHashes : CommandLineRunner {
 
 
     private fun sortAndWriteListToFile(fileName: String, list: List<String>) {
-        val sortedList = mergeSort(list)
+        list.sortedBy { it.substringAfter(" : ") }
         File(fileName).bufferedWriter().use { writer ->
-            val listToString = sortedList.joinToString("\n")
+            val listToString = list.joinToString("\n")
             writer.write(listToString)
         }
     }
@@ -155,6 +156,7 @@ class SortHashes : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         try {
+            //splitFile("files/hashes.txt", 300)
             splitFileIntoSortedChunks("files/hashes.txt", 4000000)
             val inputFiles = listChunkPathsInFolder("files/sorted_chunks/")
             mergeSortedChunks(inputFiles)
