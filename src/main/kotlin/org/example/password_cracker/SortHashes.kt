@@ -15,6 +15,8 @@ class SortHashes : CommandLineRunner {
     private fun splitFile(inputFile: String, chunkSize: Int) {
         val chunkSizeInBytes = chunkSize * 1024 * 1024L
 
+        val startTime = LocalTime.now()
+        println("Splitting file at ${formatter.format(startTime)}")
         RandomAccessFile(inputFile, "r").use { file ->
             var chunkNumber = 1
             val buffer = ByteArray(chunkSizeInBytes.toInt())
@@ -42,7 +44,7 @@ class SortHashes : CommandLineRunner {
                     .split("\n")
                     .sortedBy { it.substringAfter(" : ") }
                     .joinToString("\n")
-
+                countAndPrintDurationOfChunkSplit(startTime, chunkNumber)
                 File(outputFileName).writeText(sortedString)
 
                 file.seek(file.filePointer - (bytesRead - adjustedBytesRead))
@@ -50,6 +52,8 @@ class SortHashes : CommandLineRunner {
                 chunkNumber++
             }
         }
+        val end = LocalTime.now()
+        println("Completed after ${Duration.between(startTime, end).toMinutes()} minutes")
     }
 
 
@@ -64,7 +68,7 @@ class SortHashes : CommandLineRunner {
                 list.add(line)
                 totalLinesRead++
                 if (list.size == chunkSize) {
-                    sortAndWriteListToFile("files/sorted_chunks/chunk$count.txt", list)
+                    sortAndWriteListToFile("files/sorted_chunks/chunk_$count.txt", list)
                     countAndPrintDurationOfChunkSplit(startTime, count)
                     count++
                     list.clear()
@@ -152,7 +156,8 @@ class SortHashes : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         try {
-            splitFileIntoSortedChunks("files/hashes.txt", 1000000)
+            //splitFile("files/hashes.txt", 300)
+            splitFileIntoSortedChunks("files/hashes.txt", 4000000)
             val inputFiles = listChunkPathsInFolder("files/sorted_chunks/")
             mergeSortedChunks(inputFiles)
         } catch (e: Exception) {
