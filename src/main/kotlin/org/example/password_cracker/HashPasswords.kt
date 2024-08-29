@@ -13,31 +13,26 @@ import java.time.format.DateTimeFormatter
 class HashPasswords : CommandLineRunner {
     private val homeService = HomeService()
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    private val chunkSize = 100000
+    private val bufferSize = 100000
 
     override fun run(vararg args: String?) {
         val startTime = LocalTime.now()
         var linesRead = 0
         val buffer = StringBuilder()
-        println("Hashing of passwords started at ${startTime.format(formatter)}")
+        log("Hashing of passwords started -> ${startTime.format(formatter)}", withDuration = false)
 
         File("files/passwords.txt").useLines { lines ->
             BufferedWriter(FileWriter("files/hashes.txt")).use { writer ->
                 lines.forEach {
                     if (linesRead > 0 && linesRead % 1000000 == 0) {
-                        val interval = LocalTime.now()
-                        val duration = Duration.between(startTime, interval)
-                        println("Hashed $linesRead passwords after " +
-                                "${duration.toHoursPart()} hours " +
-                                "${duration.toMinutesPart()} minutes and " +
-                                "${duration.toSecondsPart()} seconds"
-                        )
+                        log("Hashed $linesRead passwords. ", startTime)
                     }
+
                     val hash = homeService.encode(it, "SHA-256")
                     buffer.append("$it : $hash\n")
                     linesRead++
 
-                    if (linesRead % chunkSize == 0) {
+                    if (linesRead % bufferSize == 0) {
                         writer.write(buffer.toString())
                         buffer.clear()
                     }
@@ -48,12 +43,19 @@ class HashPasswords : CommandLineRunner {
             }
         }
 
-        val duration = Duration.between(startTime, LocalTime.now())
-        println("Hashing of passwords completed after " +
-                "${duration.toHoursPart()} hours " +
-                "${duration.toMinutesPart()} minutes and " +
-                "${duration.toSecondsPart()} seconds" +
-                " with a total of $linesRead passwords hashed"
-        )
+        log("Hashing of passwords completed. Total passwords hashed: $linesRead", startTime)
+    }
+
+    private fun log(message: String, startTime: LocalTime = LocalTime.now(), withDuration: Boolean = true) {
+        println(message)
+        if (withDuration) {
+            val duration = Duration.between(startTime, LocalTime.now())
+            println(
+                "Time taken: ${duration.toHoursPart()} hours " +
+                        "${duration.toMinutesPart()} minutes and " +
+                        "${duration.toSecondsPart()} seconds\n"
+            )
+        }
+
     }
 }
