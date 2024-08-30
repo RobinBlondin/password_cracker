@@ -12,14 +12,18 @@ import java.util.*
 class SortHashes : CommandLineRunner {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
-    private fun splitFileIntoSortedChunks(inputFile: String, chunkSize: Int) {
-        val chunkSizeInBytes = chunkSize * 1024 * 1024L
-        val startTime = LocalTime.now()
-        println("Splitting file at ${formatter.format(startTime)}")
+    private fun partitionAndSortFile() {
 
-        RandomAccessFile(inputFile, "r").use { file ->
-            var chunkNumber = 1
-            val buffer = ByteArray(chunkSizeInBytes.toInt())
+        val startTime = LocalTime.now()
+        log("File splitting started -> ${formatter.format(startTime)}", startTime, false)
+
+        RandomAccessFile("files/hashes.txt", "r").use { file ->
+            val fileSize = file.length()
+            val partitionSizeInBytes = setPartitionSize(fileSize)
+            var partitionNo = 1
+            val totalPartitions = (fileSize / partitionSizeInBytes).coerceAtLeast(1)
+
+            val buffer = ByteArray(partitionSizeInBytes.toInt())
 
             while (true) {
                 val bytesRead = file.read(buffer)
@@ -37,7 +41,7 @@ class SortHashes : CommandLineRunner {
                     }
                 }
 
-                val outputFileName = "files/sorted_chunks/chunk_$chunkNumber.txt"
+                val outputFileName = "files/partitions/partition_$partitionNo.txt"
 
                 val sortedString = String(buffer.copyOfRange(0, adjustedBytesRead))
                     .trim()
@@ -45,23 +49,31 @@ class SortHashes : CommandLineRunner {
                     .sortedBy { it.substringAfter(" : ") }
                     .joinToString("\n")
 
-                countAndPrintDurationOfChunkSplit(startTime, chunkNumber)
+                log("Part $partitionNo / $totalPartitions completed", startTime)
 
                 File(outputFileName).writeText(sortedString)
 
                 file.seek(file.filePointer - (bytesRead - adjustedBytesRead))
-
-                chunkNumber++
+                partitionNo++
             }
         }
-        val end = LocalTime.now()
-        println("Completed after ${Duration.between(startTime, end).toMinutes()} minutes")
+        log("File splitting completed.", startTime)
     }
 
 
-    private fun mergeSortedChunks(inputFiles: List<String>) {
+    private fun setPartitionSize(fileSize: Long): Long {
+        return when {
+            fileSize <= 100 * 1024 * 1024L -> 10 * 1024 * 1024L
+            fileSize <= 1 * 1024 * 1024 * 1024L -> 50 * 1024 * 1024L
+            fileSize <= 10 * 1024 * 1024 * 1024L -> 100 * 1024 * 1024L
+            else -> 300 * 1024 * 1024L
+        }
+    }
+
+
+    private fun mergePartitions(inputFiles: List<String>) {
         val start = LocalTime.now()
-        println("Merging files at ${formatter.format(start)}")
+        log("Merging of files started -> ${formatter.format(start)}", start,false)
         val outputFile = File("files/sorted_hashes.txt")
 
         val pq = PriorityQueue<Pair<String, BufferedReader>>(compareBy { it.first.split(" : ")[1] })
@@ -74,6 +86,7 @@ class SortHashes : CommandLineRunner {
             }
         }
 
+
         outputFile.bufferedWriter().use { writer ->
             while (pq.isNotEmpty()) {
                 val (line, reader) = pq.poll()
@@ -82,25 +95,20 @@ class SortHashes : CommandLineRunner {
                 writer.newLine()
 
                 val nextLine = reader.readLine()
+
                 if (nextLine != null) {
                     pq.add(Pair(nextLine, reader))
                 }
             }
         }
         readers.forEach { it.close() }
-        deleteChunksAfterMerge(inputFiles)
+        deletePartitions(inputFiles)
 
-        val end = LocalTime.now()
-        println("Merging completed after ${Duration.between(start, end).toMinutes()} minutes")
+        log("Merging completed", start)
     }
 
-    private fun countAndPrintDurationOfChunkSplit(startTime: LocalTime, chunkNumber: Int) {
-        val chunkTime = LocalTime.now()
-        val duration = Duration.between(startTime, chunkTime)
-        println("Chunk $chunkNumber finished after ${duration.toMinutes()} min - ${duration.toSeconds() % 60}s")
-    }
 
-    private fun deleteChunksAfterMerge(files: List<String>) {
+    private fun deletePartitions(files: List<String>) {
         files.forEach { fileName ->
             val file = File(fileName)
             if (file.exists()) {
@@ -109,10 +117,11 @@ class SortHashes : CommandLineRunner {
         }
     }
 
-    private fun listChunkPathsInFolder(folderPath: String): List<String> {
-        val folder = File(folderPath)
+
+    private fun listOfPartitionPaths(): List<String> {
+        val folder = File("files/partitions/")
         if (!folder.exists() || !folder.isDirectory) {
-            throw IllegalArgumentException("Folder $folderPath do not exist")
+            throw IllegalArgumentException("Folder 'files/partitions/' do not exist")
         }
 
         return folder.listFiles()?.filter { it.isFile }?.map { it.absolutePath } ?: emptyList()
@@ -121,13 +130,26 @@ class SortHashes : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         try {
-            splitFileIntoSortedChunks("files/hashes.txt", 300)
-            val inputFiles = listChunkPathsInFolder("files/sorted_chunks/")
-            mergeSortedChunks(inputFiles)
+            partitionAndSortFile()
+            val inputFiles = listOfPartitionPaths()
+            mergePartitions(inputFiles)
         } catch (e: Exception) {
             print(e.message)
             e.printStackTrace()
         }
+    }
+
+    private fun log(message: String, startTime: LocalTime, withDuration: Boolean = true) {
+        println(message)
+        if(!withDuration) {
+            return
+        }
+
+        val duration = Duration.between(startTime, LocalTime.now())
+        println("Time taken: ${duration.toHoursPart()} hours " +
+                "${duration.toMinutesPart()} minutes and " +
+                "${duration.toSecondsPart()} seconds\n"
+        )
     }
 
 }
