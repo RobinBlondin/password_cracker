@@ -109,7 +109,7 @@ class SortHashes : CommandLineRunner {
                 writer.write(line)
                 writer.newLine()
 
-                amountOfBytes += line.toByteArray().size
+                amountOfBytes += lineIntoBytes(line)
                 val progress = (amountOfBytes * 100 / totalBytes)
 
                 if (progress > lastLoggedProgress || progress == 100L) {
@@ -131,6 +131,9 @@ class SortHashes : CommandLineRunner {
         log("Merging completed")
     }
 
+    fun lineIntoBytes(line: String): Int {
+        return line.toByteArray().size + "\n".toByteArray().size
+    }
 
     override fun run(vararg args: String?) {
         try {
