@@ -39,7 +39,5 @@ out/
 ### Kotlin ###
 .kotlin
 .env
-files/hashes.txt
-passwords.txt
-files/sorted_hashes.txt
-/files/*.txt
+files/*.txt
+files/partitions/*.txt

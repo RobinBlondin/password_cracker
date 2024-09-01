@@ -5,23 +5,23 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.RandomAccessFile
 import java.time.Duration
-import java.time.LocalTime
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SortHashes : CommandLineRunner {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+    private val partitions = mutableListOf<File>()
 
     private fun partitionAndSortFile() {
-
-        val startTime = LocalTime.now()
-        log("File splitting started -> ${formatter.format(startTime)}", startTime, false)
+        val startTime = LocalDateTime.now()
+        log("File splitting started -> ${formatter.format(startTime)}")
 
         RandomAccessFile("files/hashes.txt", "r").use { file ->
             val fileSize = file.length()
             val partitionSizeInBytes = setPartitionSize(fileSize)
             var partitionNo = 1
-            val totalPartitions = (fileSize / partitionSizeInBytes).coerceAtLeast(1)
+            val totalPartitions = (fileSize / partitionSizeInBytes) + 1
 
             val buffer = ByteArray(partitionSizeInBytes.toInt())
 
@@ -41,23 +41,25 @@ class SortHashes : CommandLineRunner {
                     }
                 }
 
-                val outputFileName = "files/partitions/partition_$partitionNo.txt"
+                val outputFile = File("files/partitions/partition_$partitionNo.txt")
 
-                val sortedString = String(buffer.copyOfRange(0, adjustedBytesRead))
+                val result = String(buffer.copyOfRange(0, adjustedBytesRead))
                     .trim()
                     .split("\n")
                     .sortedBy { it.substringAfter(" : ") }
                     .joinToString("\n")
 
-                log("Part $partitionNo / $totalPartitions completed", startTime)
-
-                File(outputFileName).writeText(sortedString)
+                outputFile.writeText(result)
+                partitions.add(outputFile)
+                log("Part $partitionNo / $totalPartitions completed", startTime, true)
 
                 file.seek(file.filePointer - (bytesRead - adjustedBytesRead))
                 partitionNo++
             }
         }
-        log("File splitting completed.", startTime)
+        println("> ")
+        log("File splitting completed.")
+        mergePartitions(partitions)
     }
 
 
@@ -71,21 +73,34 @@ class SortHashes : CommandLineRunner {
     }
 
 
-    private fun mergePartitions(inputFiles: List<String>) {
-        val start = LocalTime.now()
-        log("Merging of files started -> ${formatter.format(start)}", start,false)
+    private fun mergePartitions(inputFiles: List<File>) {
+        val totalBytes = File("files/hashes.txt").length()
+        var amountOfBytes = 0L
+        var lastLoggedProgress = 0
+        val start = LocalDateTime.now()
         val outputFile = File("files/sorted_hashes.txt")
-
         val pq = PriorityQueue<Pair<String, BufferedReader>>(compareBy { it.first.split(" : ")[1] })
-        val readers = inputFiles.map { File(it).bufferedReader() }
+        val readers = inputFiles.map { it.bufferedReader() }
+
+        log("Merging of files started ----> ${formatter.format(start)}")
+
+        fun deleteFile(reader: BufferedReader) {
+            val index = readers.indexOf(reader)
+            val file = inputFiles[index]
+            file.delete()
+        }
 
         readers.forEach { reader ->
             val line = reader.readLine()
+            amountOfBytes += line.toByteArray().size
+
             if (line != null) {
+                amountOfBytes += line.toByteArray().size
                 pq.add(Pair(line, reader))
+            } else {
+                deleteFile(reader)
             }
         }
-
 
         outputFile.bufferedWriter().use { writer ->
             while (pq.isNotEmpty()) {
@@ -94,62 +109,51 @@ class SortHashes : CommandLineRunner {
                 writer.write(line)
                 writer.newLine()
 
-                val nextLine = reader.readLine()
+                amountOfBytes += line.toByteArray().size
+                val progress = (amountOfBytes.toDouble() * 100 / totalBytes).toInt()
 
+                if (progress > lastLoggedProgress || progress == 100) {
+                    log("Merging progress: ${progress}%", start, true)
+                    lastLoggedProgress = progress
+                }
+
+                val nextLine = reader.readLine()
                 if (nextLine != null) {
                     pq.add(Pair(nextLine, reader))
+                } else {
+                    deleteFile(reader)
                 }
             }
         }
         readers.forEach { it.close() }
-        deletePartitions(inputFiles)
-
-        log("Merging completed", start)
-    }
-
-
-    private fun deletePartitions(files: List<String>) {
-        files.forEach { fileName ->
-            val file = File(fileName)
-            if (file.exists()) {
-                file.delete()
-            }
-        }
-    }
-
-
-    private fun listOfPartitionPaths(): List<String> {
-        val folder = File("files/partitions/")
-        if (!folder.exists() || !folder.isDirectory) {
-            throw IllegalArgumentException("Folder 'files/partitions/' do not exist")
-        }
-
-        return folder.listFiles()?.filter { it.isFile }?.map { it.absolutePath } ?: emptyList()
+        println("> ")
+        log("Merging completed")
     }
 
 
     override fun run(vararg args: String?) {
         try {
             partitionAndSortFile()
-            val inputFiles = listOfPartitionPaths()
-            mergePartitions(inputFiles)
         } catch (e: Exception) {
             print(e.message)
             e.printStackTrace()
         }
     }
 
-    private fun log(message: String, startTime: LocalTime, withDuration: Boolean = true) {
-        println(message)
-        if(!withDuration) {
-            return
+    private fun log(message: String, startTime: LocalDateTime = LocalDateTime.now(), overwrite: Boolean = false) {
+        if (overwrite) {
+            print("\r> $message ----> ${durationLog(startTime)}")
+        } else {
+            println("> $message")
         }
+    }
 
-        val duration = Duration.between(startTime, LocalTime.now())
-        println("Time taken: ${duration.toHoursPart()} hours " +
-                "${duration.toMinutesPart()} minutes and " +
-                "${duration.toSecondsPart()} seconds\n"
-        )
+    private fun durationLog(startTime: LocalDateTime): String {
+        val duration = Duration.between(startTime, LocalDateTime.now())
+        return "Time taken: ${duration.toHoursPart()} hours " +
+                    "${duration.toMinutesPart()} minutes and " +
+                    "${duration.toSecondsPart()} seconds"
+
     }
 
 }
