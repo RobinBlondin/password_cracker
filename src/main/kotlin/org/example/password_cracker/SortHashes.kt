@@ -76,7 +76,7 @@ class SortHashes : CommandLineRunner {
     private fun mergePartitions(inputFiles: List<File>) {
         val totalBytes = File("files/hashes.txt").length()
         var amountOfBytes = 0L
-        var lastLoggedProgress = 0
+        var lastLoggedProgress = 0L
         val start = LocalDateTime.now()
         val outputFile = File("files/sorted_hashes.txt")
         val pq = PriorityQueue<Pair<String, BufferedReader>>(compareBy { it.first.split(" : ")[1] })
@@ -110,9 +110,9 @@ class SortHashes : CommandLineRunner {
                 writer.newLine()
 
                 amountOfBytes += line.toByteArray().size
-                val progress = (amountOfBytes.toDouble() * 100 / totalBytes).toInt()
+                val progress = (amountOfBytes * 100 / totalBytes)
 
-                if (progress > lastLoggedProgress || progress == 100) {
+                if (progress > lastLoggedProgress || progress == 100L) {
                     log("Merging progress: ${progress}%", start, true)
                     lastLoggedProgress = progress
                 }
@@ -126,6 +126,7 @@ class SortHashes : CommandLineRunner {
             }
         }
         readers.forEach { it.close() }
+
         println("> ")
         log("Merging completed")
     }
