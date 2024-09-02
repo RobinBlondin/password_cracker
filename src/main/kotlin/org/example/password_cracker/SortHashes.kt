@@ -57,6 +57,7 @@ class SortHashes : CommandLineRunner {
                 partitionNo++
             }
         }
+        File("files/hashes.txt").delete()
         println("> ")
         log("File splitting completed.")
         mergePartitions(partitions)
@@ -74,7 +75,7 @@ class SortHashes : CommandLineRunner {
 
 
     private fun mergePartitions(inputFiles: List<File>) {
-        val totalBytes = File("files/hashes.txt").length()
+        val totalBytes = inputFiles.sumOf { it.length() }
         var amountOfBytes = 0L
         var lastLoggedProgress = 0L
         val start = LocalDateTime.now()
