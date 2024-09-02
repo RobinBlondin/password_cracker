@@ -22,6 +22,7 @@ class HashPasswords : CommandLineRunner {
     private var amountOfBytes = 0L
     private var lastLoggedProgress = 0L
 
+
     override fun run(vararg args: String?) = runBlocking {
         val startTime = LocalDateTime.now()
         var linesRead = 0
@@ -45,12 +46,12 @@ class HashPasswords : CommandLineRunner {
                     result.forEach { line ->
                         buffer.append("$line\n")
                         linesRead++
-                        amountOfBytes += line.substringBefore(" : ").toByteArray().size
+                        amountOfBytes += lineIntoBytes(line)
                     }
 
-                    val progress = (amountOfBytes * 100 / totalBytes)
+                    val progress = amountOfBytes * 100 / totalBytes
 
-                    if (progress > lastLoggedProgress || progress == 100L) {
+                    if (progress > lastLoggedProgress) {
                         log("Hashing progress: ${progress}%", startTime, true)
                         lastLoggedProgress = progress
                     }
@@ -60,8 +61,12 @@ class HashPasswords : CommandLineRunner {
                 }
             }
         }
-
+        println()
         log("Hashing of passwords completed. Total passwords hashed: $linesRead")
+    }
+
+    private fun lineIntoBytes(line: String): Int {
+        return line.substringBefore(" : ").toByteArray().size + "\n".toByteArray().size
     }
 
     private fun log(message: String, startTime: LocalDateTime = LocalDateTime.now(), overwrite: Boolean = false) {
