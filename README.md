@@ -116,18 +116,19 @@ Before you start, ensure you have the following installed:
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_REDIRECT_URI=<your-github-redirect-uri>
 
     # Email Configuration
-    SPRING_MAIL_HOST=<your-mail-host>
-    SPRING_MAIL_PORT=<your-mail-port>
-    SPRING_MAIL_USERNAME=<your-mail-username>
-    SPRING_MAIL_PASSWORD=<your-mail-password>
+    SPRING_MAIL_HOST=smtp.example.com
+    SPRING_MAIL_PORT=587
+    SPRING_MAIL_USERNAME=fake_user
+    SPRING_MAIL_PASSWORD=fake_password
     SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
     SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     ```
-    Replace the placeholder values with your actual database credentials, Github OAuth client details and email server configuration. 
+    Replace the placeholder values with your actual database credentials and Github OAuth client details. If you just want to try the content of the application, leave the email values as is.(NOTE: Account registration will not work if you do).
+    Otherwise replace them with your own mail values.
 
    <br>
 
-6.  **Run the application**
+7.  **Run the application**
 
    Finally, start the application.
    
