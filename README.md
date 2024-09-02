@@ -1,6 +1,6 @@
 # Password Cracker
 
-`password_cracker` is a tool that allows users to hash passwords, sort them, and then be able to look up a password based on its hash in a web interface. This project supports integration with a MySQL database and GitHub OAuth for user authentication.
+Password Cracker is a Spring Boot web application with a Thymeleaf front-end that allows users to create SHA-256 hashed password lists from large files containing words or passwords. The application efficiently processes unlimited-sized input files, hashes the contents, sorts the resulting hashes, and provides a user-friendly interface to search for specific hashes to retrieve their respective original passwords.
 
 ## Getting Started
 
