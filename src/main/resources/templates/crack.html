@@ -21,6 +21,7 @@
 <div class="search-container">
 
     <form action="/crack" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
         <label>
             <input type="text" name="search" placeholder="Enter SHA256 hashed string" class="search-input">
         </label>

@@ -15,6 +15,7 @@
 
     <br>
     <form action="/register" th:object="${dto}" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}">
         <div class="input-group">
             <label for="name"></label>
             <input type="text" id="name" name="name" th:field="*{name}" placeholder="Enter your name" minlength="2" maxlength="50" pattern="[A-Öa-ö ]+" class="login-input" required>

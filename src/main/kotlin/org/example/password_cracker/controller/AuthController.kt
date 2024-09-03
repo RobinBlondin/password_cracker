@@ -31,7 +31,12 @@ class AuthController(val authService: AuthService) {
     }
 
     @GetMapping("/register")
-    fun register(model: Model): String = authService.loadRegisterPageModelAttributes(model)
+    fun register(model: Model): String {
+        if(!model.containsAttribute("dto")) {
+            model.addAttribute("dto", RegisterDTO())
+        }
+        return authService.loadRegisterPageModelAttributes(model)
+    }
 
 
     @PostMapping("/register")

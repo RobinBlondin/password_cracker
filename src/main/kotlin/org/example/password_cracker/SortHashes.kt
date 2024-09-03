@@ -22,7 +22,6 @@ class SortHashes : CommandLineRunner {
             val partitionSizeInBytes = setPartitionSize(fileSize)
             var partitionNo = 1
             val totalPartitions = (fileSize / partitionSizeInBytes) + 1
-
             val buffer = ByteArray(partitionSizeInBytes.toInt())
 
             while (true) {
@@ -132,7 +131,7 @@ class SortHashes : CommandLineRunner {
         log("Merging completed")
     }
 
-    fun lineIntoBytes(line: String): Int {
+    private fun lineIntoBytes(line: String): Int {
         return line.toByteArray().size + "\n".toByteArray().size
     }
 

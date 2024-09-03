@@ -30,6 +30,7 @@
 <div class="search-container">
 
   <form action="/home" method="post">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}">
     <label>
       <input type="text" name="search" placeholder="Enter any text" class="search-input">
     </label>

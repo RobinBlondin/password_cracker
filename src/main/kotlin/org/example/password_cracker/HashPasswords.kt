@@ -61,6 +61,7 @@ class HashPasswords : CommandLineRunner {
                 }
             }
         }
+        File("files/passwords.txt").delete()
         println()
         log("Hashing of passwords completed. Total passwords hashed: $linesRead")
     }
