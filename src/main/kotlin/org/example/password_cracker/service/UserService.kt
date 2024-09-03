@@ -29,8 +29,6 @@ class UserService(
         )
     }
 
-
-
     fun findUserByEmail(email: String): Optional<User> {
         return userRepository.findUserByEmail(email)
     }
