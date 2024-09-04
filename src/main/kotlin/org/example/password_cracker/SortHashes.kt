@@ -11,13 +11,22 @@ import java.util.*
 
 class SortHashes : CommandLineRunner {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
-    private val partitions = mutableListOf<File>()
 
-    private fun partitionAndSortFile() {
+    private fun partitionAndSortFile(algorithm: String) {
+        val partitions = mutableListOf<File>()
+        val (sourcePath, partitionPath) = when (algorithm) {
+            "MD5" -> Pair("files/hashes_md5.txt", "files/partitions/md5_partition")
+            "SHA256" -> Pair("files/hashes_sha256.txt", "files/partitions/sha256_partition")
+            else -> throw IllegalArgumentException("Invalid algorithm")
+        }
+
+        println("Source path: $sourcePath")
+        println("Partition path: $partitionPath")
+
         val startTime = LocalDateTime.now()
-        log("File splitting started -> ${formatter.format(startTime)}")
+        log("$algorithm file splitting started -> ${formatter.format(startTime)}")
 
-        RandomAccessFile("files/hashes.txt", "r").use { file ->
+        RandomAccessFile(sourcePath, "r").use { file ->
             val fileSize = file.length()
             val partitionSizeInBytes = setPartitionSize(fileSize)
             var partitionNo = 1
@@ -40,7 +49,7 @@ class SortHashes : CommandLineRunner {
                     }
                 }
 
-                val outputFile = File("files/partitions/partition_$partitionNo.txt")
+                val outputFile = File("${partitionPath}_$partitionNo.txt")
 
                 val result = String(buffer.copyOfRange(0, adjustedBytesRead))
                     .trim()
@@ -56,10 +65,10 @@ class SortHashes : CommandLineRunner {
                 partitionNo++
             }
         }
-        File("files/hashes.txt").delete()
+        File("files/hashes_${algorithm.lowercase()}.txt").delete()
         println("> ")
         log("File splitting completed.")
-        mergePartitions(partitions)
+        mergePartitions(partitions, algorithm.lowercase())
     }
 
 
@@ -73,16 +82,16 @@ class SortHashes : CommandLineRunner {
     }
 
 
-    private fun mergePartitions(inputFiles: List<File>) {
+    private fun mergePartitions(inputFiles: List<File>, algorithm: String) {
         val totalBytes = inputFiles.sumOf { it.length() }
         var amountOfBytes = 0L
         var lastLoggedProgress = 0L
         val start = LocalDateTime.now()
-        val outputFile = File("files/sorted_hashes.txt")
+        val outputFile = File("files/sorted_$algorithm.txt")
         val pq = PriorityQueue<Pair<String, BufferedReader>>(compareBy { it.first.split(" : ")[1] })
         val readers = inputFiles.map { it.bufferedReader() }
 
-        log("Merging of files started ----> ${formatter.format(start)}")
+        log("Merging of $algorithm files started ----> ${formatter.format(start)}")
 
         fun deleteFile(reader: BufferedReader) {
             val index = readers.indexOf(reader)
@@ -137,7 +146,8 @@ class SortHashes : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         try {
-            partitionAndSortFile()
+            partitionAndSortFile("MD5")
+            partitionAndSortFile("SHA256")
         } catch (e: Exception) {
             print(e.message)
             e.printStackTrace()
