@@ -23,7 +23,7 @@
     <form action="/crack" method="post">
         <input type="hidden" name="_csrf" th:value="${_csrf.token}">
         <label>
-            <input type="text" name="search" placeholder="Enter SHA256 hashed string" class="search-input">
+            <input type="text" name="search" placeholder="Enter MD5 or SHA256 hashed string" class="search-input">
         </label>
         <a href="">
             <button type="submit" class="search-button">Decode</button>
