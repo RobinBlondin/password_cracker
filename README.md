@@ -64,9 +64,9 @@ Before you start, ensure you have the following installed:
 
    <br>
 
-3. **Generate hashes**
+3. **Generate hash files**
 
-   To generate a file `hashes.txt` containing each password and its corresponding hash, run the `HashPasswords` command-line runner withe the argument `hashPasswords`:
+   To generate hash files with each password with the corresponding hash value on each line, please run this command inside the project root directory:
    
    **Unix:**
    ```bash
@@ -76,13 +76,13 @@ Before you start, ensure you have the following installed:
    ```bash
    gradlew.bat bootRun --args='hashPasswords'
    ``` 
-   This will create a file named `hashes.txt` inside the `/files` directory. This may take a while depending on the size of the file.  
+   This will create two files, `hashes_md5.txt` and `hashes_sha256.txt`, inside the `/files` directory.  
 
    <br>
 
 4. **Sort the hashes**
 
-   To sort the `hashes.txt` file by hash value, run the `SortHashes` command-line runner with the argument `sortHashes`:
+   To sort the hash files, please run this command inside the project root directory:
    
    Unix:
     ```bash
@@ -94,7 +94,7 @@ Before you start, ensure you have the following installed:
    ``` 
    
 
-    This will create a sorted version of `hashes.txt` in the `/files` directory. This may take a while depending on the size of the original file. 
+    This will generate two sorted files, containing all the lines from the hash files sorted by hash value, inside the `/files` directory.
 
    <br>
 
