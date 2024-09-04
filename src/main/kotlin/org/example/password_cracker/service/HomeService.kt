@@ -26,7 +26,13 @@ class HomeService {
     }
 
     fun crackHash(hash: String): String {
-        RandomAccessFile("files/sorted_hashes.txt", "r").use { file ->
+        val path = when {
+            isHexadecimal(hash) && hash.length == 64 -> "files/sorted_sha256.txt"
+            isHexadecimal(hash) && hash.length == 32 -> "files/sorted_md5.txt"
+            else -> throw IllegalArgumentException("Invalid hash")
+        }
+
+        RandomAccessFile(path, "r").use { file ->
             var startIndex = 0L
             var endIndex = file.length() - 1
 
