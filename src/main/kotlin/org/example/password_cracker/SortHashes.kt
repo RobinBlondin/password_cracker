@@ -20,9 +20,6 @@ class SortHashes : CommandLineRunner {
             else -> throw IllegalArgumentException("Invalid algorithm")
         }
 
-        println("Source path: $sourcePath")
-        println("Partition path: $partitionPath")
-
         val startTime = LocalDateTime.now()
         log("$algorithm file splitting started -> ${formatter.format(startTime)}")
 
@@ -71,7 +68,6 @@ class SortHashes : CommandLineRunner {
         mergePartitions(partitions, algorithm.lowercase())
     }
 
-
     private fun setPartitionSize(fileSize: Long): Long {
         return when {
             fileSize <= 100 * 1024 * 1024L -> 10 * 1024 * 1024L
@@ -80,7 +76,6 @@ class SortHashes : CommandLineRunner {
             else -> 300 * 1024 * 1024L
         }
     }
-
 
     private fun mergePartitions(inputFiles: List<File>, algorithm: String) {
         val totalBytes = inputFiles.sumOf { it.length() }
