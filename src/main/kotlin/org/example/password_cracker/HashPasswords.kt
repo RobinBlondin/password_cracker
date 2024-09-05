@@ -26,8 +26,6 @@ class HashPasswords : CommandLineRunner {
     override fun run(vararg args: String?) = runBlocking {
         val startTime = LocalDateTime.now()
         var linesRead = 0
-        val bufferMd5 = StringBuilder()
-        val bufferSha256 = StringBuilder()
         log("Hashing of passwords started ----> ${startTime.format(formatter)}")
 
         BufferedWriter(FileWriter("files/hashes_md5.txt")).use { writerMd5 ->
@@ -41,30 +39,26 @@ class HashPasswords : CommandLineRunner {
                                 val hashSha256 = homeService.encode(password, "SHA-256")
                                 val hashMd5 = homeService.encode(password, "MD5")
 
-                                "$password : $hashMd5 ||| $password : $hashSha256"
+                                Pair("$password : $hashMd5", "$password : $hashSha256")
                             }
                         }
 
                         val result = deferredResults.awaitAll()
-                        result.forEach { line ->
-                            val (md5, sha256) = line.split(" ||| ")
-                            bufferMd5.append("$md5\n")
-                            bufferSha256.append("$sha256\n")
-                            linesRead++
-                            amountOfBytes += lineIntoBytes(md5) + lineIntoBytes(sha256)
+                        writerMd5.apply {
+                            result.forEach { (md5, _) -> write("$md5\n") }
+                        }
+                        writerSha256.apply {
+                            result.forEach { (_, sha256) -> write("$sha256\n") }
                         }
 
-                        val progress = amountOfBytes * 100 / totalBytes
+                        linesRead += chunk.size
+                        result.forEach { (md5, sha256) -> amountOfBytes += lineIntoBytes(md5) + lineIntoBytes(sha256) }
 
+                        val progress = amountOfBytes * 100 / totalBytes
                         if (progress > lastLoggedProgress) {
                             log("Hashing progress: ${progress}%", startTime, true)
                             lastLoggedProgress = progress
                         }
-
-                        writerMd5.write(bufferMd5.toString())
-                        writerSha256.write(bufferSha256.toString())
-                        bufferMd5.clear()
-                        bufferSha256.clear()
                     }
                 }
             }
